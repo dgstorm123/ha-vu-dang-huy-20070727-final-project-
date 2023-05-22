@@ -1,0 +1,83 @@
+<%= form_with(model: inventory) do |form| %>
+  <% if inventory.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 p-6 rounded text-red-800">
+      <h2 class="text-lg font-semibold mb-3"><%= pluralize(inventory.errors.count, "error") %> prohibited this inventory from being saved:</h2>
+      <ul class="list-disc leading-relaxed">
+        <% inventory.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-6">
+    <%= form.label :name, class: label_class %>
+    <%= form.text_field :name, class: input_class %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :quantity, class: label_class %>
+    <%= form.number_field :quantity, class: input_class %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :import_day, class: label_class %>
+    <%= form.date_field :import_day, class: input_class %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :exp_day, class: label_class %>
+    <%= form.date_field :exp_day, class: input_class %>
+  </div>
+
+  <div class="mb-6">
+    <%= form.label :day_left, class: label_class %>
+    <span id="day_left_value"><%= inventory.day_left %></span>
+    <%= form.hidden_field :day_left, id: "inventory_day_left" %>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var expDayField = document.getElementById("inventory_exp_day");
+      var importDayField = document.getElementById("inventory_import_day");
+      var dayLeftValue = document.getElementById("day_left_value");
+
+      function calculateDayLeft() {
+        var expDay = new Date(expDayField.value);
+        var importDay = new Date(importDayField.value);
+        var dayLeft = Math.ceil((expDay - importDay) / (1000 * 60 * 60 * 24));
+
+        dayLeftValue.innerText = dayLeft;
+        document.getElementById("inventory_day_left").value = dayLeft; // Cập nhật giá trị day_left vào trường ẩn
+      }
+
+      expDayField.addEventListener("change", calculateDayLeft);
+      importDayField.addEventListener("change", calculateDayLeft);
+
+      // Tính toán ban đầu khi trang được tải
+      calculateDayLeft();
+    });
+  </script>
+
+  <!-- Các trường khác và nút gửi form -->
+
+  <% if inventory.persisted? %>
+    <% # Hiển thị day_left nếu đã có giá trị %>
+    <% if inventory.day_left.present? %>
+      <div class="mb-6">
+        <strong>Days left:</strong> <%= inventory.day_left %>
+      </div>
+    <% end %>
+  <% end %>
+
+
+  <div class="mb-6">
+    <%= form.label :provider, class: label_class %>
+    <%= form.text_field :provider, class: input_class %>
+  </div>
+
+  <%= form.submit class: button_class(theme: 'primary') %>
+
+  <% if inventory.persisted? %>
+    <%= link_to "Cancel", inventory, class: "text-neutral-700 underline inline-block ml-3" %>
+  <% else %>
+    <%= link_to "Cancel", inventories_path, class: "text-neutral-700 underline inline-block ml-3" %>
+  <% end %>
+<% end %>

@@ -1,0 +1,104 @@
+<%= form_with(model: order) do |form| %>
+  <% if order.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 p-6 rounded text-red-800">
+      <h2 class="text-lg font-semibold mb-3"><%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+      <ul class="list-disc leading-relaxed">
+        <% order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-6">
+    <%= form.label :name, class: label_class %>
+    <%= form.text_field :name, class: input_class %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :phone, class: label_class %>
+    <%= form.text_field :phone, class: input_class %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :address, class: label_class %>
+    <%= form.text_area :address, class: input_class %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :delivery_date, class: label_class %>
+    <%= form.date_field :delivery_date, class: input_class %>
+  </div>
+  <div class="mb-6">
+  <%= form.label :product_id, class: label_class %>
+  <%= form.collection_select :product_id, Product.all, :id, :name, { include_blank: true }, class: "#{input_class} product-select" %>
+  </div>
+  <div class="mb-6">
+    <%= form.label :payment_option, class: label_class %>
+    <%= form.select :payment_option, ['Cash', 'Credit Card'], {}, class: input_class, id: 'payment_option_select' %>
+  </div>
+
+  <div id="credit_card_fields" style="display: none;">
+    <div class="mb-6">
+      <%= form.label :cardholder_name, class: label_class %>
+      <%= form.text_field :cardholder_name, class: input_class %>
+    </div>
+    <div class="mb-6">
+      <%= form.label :card_number, class: label_class %>
+      <%= form.text_field :card_number, class: input_class %>
+    </div>
+    <div class="mb-6">
+      <%= form.label :bank_name, class: label_class %>
+      <%= form.text_field :bank_name, class: input_class %>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <%= form.label :quantity, class: label_class %>
+    <%= form.number_field :quantity, class: "#{input_class} order-quantity-field", min: 1 %>
+  </div>
+
+  <div class="mb-6">
+    <%= form.label :order_status, class: label_class %>
+    <%= form.text_field :order_status, class: input_class %>
+  </div>
+
+  <% if order.product %>
+  <div class="mb-6">
+    <label class="<%= label_class %>">Total</label>
+    <span class="<%= input_class %>"><%= number_to_currency(order.product.price * order.quantity) %></span>
+  </div>
+<% end %>
+  <%= form.submit class: button_class(theme: 'primary') %>
+
+  <% if order.persisted? %>
+    <%= link_to "Cancel", order, class: "text-neutral-700 underline inline-block ml-3" %>
+  <% else %>
+    <%= link_to "Cancel", orders_path, class: "text-neutral-700 underline inline-block ml-3" %>
+  <% end %>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var paymentOptionSelect = document.getElementById('payment_option_select');
+      var creditCardFields = document.getElementById('credit_card_fields');
+      var orderQuantityField = document.querySelector('.order-quantity-field');
+      var productSelect = document.querySelector('.product-select');
+
+      paymentOptionSelect.addEventListener('change', function() {
+        if (paymentOptionSelect.value === 'Credit Card') {
+          creditCardFields.style.display = 'block';
+        } else {
+          creditCardFields.style.display = 'none';
+        }
+      });
+
+      orderQuantityField.addEventListener('change', function() {
+        var selectedProductId = productSelect.value;
+        var selectedProduct = document.querySelector("option[value='" + selectedProductId + "']");
+        var productQuantity = parseInt(selectedProduct.dataset.quantity);
+      
+        if (orderQuantityField.value > productQuantity) {
+          orderQuantityField.value = productQuantity;
+        }
+      });
+    });
+  </script>
+<% end %>

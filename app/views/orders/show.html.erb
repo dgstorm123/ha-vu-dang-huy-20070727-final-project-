@@ -1,0 +1,54 @@
+<div class="max-w-3xl mx-auto px-4">
+  <div class="flex items-center justify-between">
+    <h1 class="flex-1 font-bold text-3xl">Order</h1>
+
+    <div class="flex-wrap lg:flex items-center lg:space-x-3">
+      <%= link_to orders_path, class: button_class(theme: "transparent") do %>
+      All Orders
+      <% end %>
+      <%= link_to edit_order_path(@order), class: button_class(theme:"primary") do %>
+      Edit
+      <% end %>
+    </div>
+  </div>
+
+  <ul class="text-slate-700">
+      <li>
+        <p class="font-semibold">Name:</p>
+        <p><%= @order.name %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Phone:</p>
+        <p><%= @order.phone %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Address:</p>
+        <p><%= @order.address %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Delivery date:</p>
+        <p><%= @order.delivery_date %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Product:</p>
+        <p><%= @order.product_id %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Payment option:</p>
+        <p><%= @order.payment_option %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Quantity:</p>
+        <p><%= @order.quantity %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Order requirment:</p>
+        <p><%= @order.order_status %></p>
+      </li>
+      <li>
+        <p class="font-semibold">Total:</p>
+        <p><%= number_to_currency(@order.product.price * @order.quantity) %></p>
+      </li>
+
+  </ul>
+</div>

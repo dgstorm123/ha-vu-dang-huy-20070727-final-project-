@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_08_050134) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_20_170538) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -49,24 +49,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_08_050134) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "books", force: :cascade do |t|
-    t.string "title"
-    t.string "author"
-    t.string "publisher"
-    t.integer "year"
-    t.integer "subject_id", null: false
+  create_table "admins", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["subject_id"], name: "index_books_on_subject_id"
-  end
-
-  create_table "customers", force: :cascade do |t|
-    t.string "name"
-    t.string "carplate"
-    t.string "carnames"
-    t.datetime "date_in"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admins_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -80,16 +72,56 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_08_050134) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
-  create_table "subjects", force: :cascade do |t|
+  create_table "inventories", force: :cascade do |t|
     t.string "name"
-    t.string "description"
+    t.integer "quantity"
+    t.date "import_day"
+    t.date "exp_day"
+    t.integer "day_left"
+    t.string "provider"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "tickets", force: :cascade do |t|
-    t.datetime "date"
-    t.string "spot"
+  create_table "materials", force: :cascade do |t|
+    t.string "name"
+    t.integer "quantity"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "memberships", force: :cascade do |t|
+    t.string "name"
+    t.string "phone"
+    t.string "email"
+    t.string "voucher"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "name"
+    t.string "phone"
+    t.text "address"
+    t.date "delivery_date"
+    t.integer "product_id"
+    t.string "payment_option"
+    t.integer "quantity"
+    t.string "order_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "cardholder_name"
+    t.string "card_number"
+    t.string "bank_name"
+    t.string "title"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.decimal "price"
+    t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -111,5 +143,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_08_050134) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "books", "subjects"
 end

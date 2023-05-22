@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  quantity: 1
+  import_day: 2023-05-21
+  exp_day: 2023-05-21
+  day_left: 1
+  provider: MyString
+
+two:
+  name: MyString
+  quantity: 1
+  import_day: 2023-05-21
+  exp_day: 2023-05-21
+  day_left: 1
+  provider: MyString
