@@ -5,7 +5,7 @@ class CreateInventories < ActiveRecord::Migration[7.0]
       t.integer :quantity
       t.date :import_day
       t.date :exp_day
-      t.integer :day_Left
+      t.integer :day_left
       t.string :provider
 
       t.timestamps

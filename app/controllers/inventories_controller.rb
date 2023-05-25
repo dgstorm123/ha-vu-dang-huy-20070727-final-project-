@@ -1,6 +1,7 @@
 class InventoriesController < ApplicationController
-  before_action :set_inventory, only: %i[ show edit update destroy ]
+  before_action :set_inventory, only: %i[show edit update destroy]
   before_action :authenticate_user!
+  
   # GET /inventories or /inventories.json
   def index
     @inventories = Inventory.all
@@ -8,6 +9,7 @@ class InventoriesController < ApplicationController
 
   # GET /inventories/1 or /inventories/1.json
   def show
+    # No need to iterate over @inventories here
   end
 
   # GET /inventories/new
@@ -58,13 +60,14 @@ class InventoriesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_inventory
-      @inventory = Inventory.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def inventory_params
-      params.require(:inventory).permit(:name, :quantity, :import_day, :exp_day, :provider, :day_left)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_inventory
+    @inventory = Inventory.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def inventory_params
+    params.require(:inventory).permit(:name, :quantity, :import_day, :exp_day, :provider, :day_left)
+  end
 end

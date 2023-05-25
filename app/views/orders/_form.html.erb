@@ -2,7 +2,6 @@
   <% if order.errors.any? %>
     <div id="error_explanation" class="bg-red-50 p-6 rounded text-red-800">
       <h2 class="text-lg font-semibold mb-3"><%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:</h2>
-
       <ul class="list-disc leading-relaxed">
         <% order.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -15,22 +14,38 @@
     <%= form.label :name, class: label_class %>
     <%= form.text_field :name, class: input_class %>
   </div>
-  <div class="mb-6">
-    <%= form.label :phone, class: label_class %>
-    <%= form.text_field :phone, class: input_class %>
-  </div>
+
+<div class="mb-6">
+  <%= form.label :phone, class: label_class %>
+  <%= form.text_field :phone, class: input_class, id: 'order_phone' %>
+</div>
+
+<div class="mb-6">
+  <% if order.phone.present? %>
+    <% membership = Membership.find_by(phone: order.phone) %>
+    <% if membership.present? && membership.voucher.present? %>
+      <label class="<%= label_class %>">Voucher</label>
+      <span class="<%= input_class %>" id="voucher_field"><%= membership.voucher %></span>
+    <% end %>
+  <% end %>
+</div>
+
+
   <div class="mb-6">
     <%= form.label :address, class: label_class %>
     <%= form.text_area :address, class: input_class %>
   </div>
+
   <div class="mb-6">
     <%= form.label :delivery_date, class: label_class %>
     <%= form.date_field :delivery_date, class: input_class %>
   </div>
+
   <div class="mb-6">
-  <%= form.label :product_id, class: label_class %>
-  <%= form.collection_select :product_id, Product.all, :id, :name, { include_blank: true }, class: "#{input_class} product-select" %>
+    <%= form.label :product_id, "Product", class: label_class %>
+    <%= form.select :product_id, options_from_collection_for_select(Product.all, :id, :name, form.object.product_id), { include_blank: false }, class: input_class %>
   </div>
+
   <div class="mb-6">
     <%= form.label :payment_option, class: label_class %>
     <%= form.select :payment_option, ['Cash', 'Credit Card'], {}, class: input_class, id: 'payment_option_select' %>
@@ -62,11 +77,12 @@
   </div>
 
   <% if order.product %>
-  <div class="mb-6">
-    <label class="<%= label_class %>">Total</label>
-    <span class="<%= input_class %>"><%= number_to_currency(order.product.price * order.quantity) %></span>
-  </div>
-<% end %>
+    <div class="mb-6">
+      <label class="<%= label_class %>">Total</label>
+      <span class="<%= input_class %>"><%= number_to_currency(order.product.price * order.quantity) %></span>
+    </div>
+  <% end %>
+
   <%= form.submit class: button_class(theme: 'primary') %>
 
   <% if order.persisted? %>
@@ -94,11 +110,36 @@
         var selectedProductId = productSelect.value;
         var selectedProduct = document.querySelector("option[value='" + selectedProductId + "']");
         var productQuantity = parseInt(selectedProduct.dataset.quantity);
-      
+
         if (orderQuantityField.value > productQuantity) {
           orderQuantityField.value = productQuantity;
         }
       });
     });
   </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var orderPhoneField = document.getElementById('order_phone');
+    var voucherField = document.getElementById('voucher_field');
+
+    orderPhoneField.addEventListener('input', function() {
+      var phoneNumber = orderPhoneField.value;
+      if (phoneNumber !== '') {
+        fetch('/check_membership?phone=' + phoneNumber)
+          .then(response => response.json())
+          .then(data => {
+            if (data.membership && data.membership.voucher) {
+              voucherField.innerText = data.membership.voucher;
+            } else {
+              voucherField.innerText = '';
+            }
+          });
+      } else {
+        voucherField.innerText = '';
+      }
+    });
+  });
+</script>
+
+
 <% end %>

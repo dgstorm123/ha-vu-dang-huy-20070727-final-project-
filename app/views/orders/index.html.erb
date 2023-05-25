@@ -1,5 +1,6 @@
 
-
+  
+  
 
 <div class="container mx-auto px-4">
   <div class="flex items-center justify-between flex-wrap mb-6">
@@ -12,11 +13,13 @@
 
   <table class="table-auto border-collapse border-slate-400 w-full">
     <thead class="bg-slate-50 dark:bg-slate-700">
+    <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" %>
       <tr>
         
           <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Name</th>
         
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Phone</th>
+                  <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Voucher</th>
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Address</th>
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Delivery date</th>
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Product</th>
@@ -24,7 +27,9 @@
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Quantity</th>
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Order requirment</th>
                   <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Total</th>
-                
+                  <th class="border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">show</th>
+                 
+      </tr>
       </tr>
     </thead>
 
@@ -36,16 +41,22 @@
       
 
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.phone %></td>
+               <% membership = @memberships.find_by(phone: order.phone) %>
+              <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= membership ? membership.voucher : 'N/A' %></td>
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.address %></td>
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.delivery_date %></td>
-              <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.product_id %></td>
+              <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.product.name %></td>
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.payment_option %></td>
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.quantity %></td>
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= order.order_status %></td>
               <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400"><%= number_to_currency(order.product.price * order.quantity) %>
 
       
-      
+      <td class="border border-slate-300 dark:border-slate-700p-4 text-slate-500 dark:text-slate-400"style="width: 150px;">
+        <%= link_to 'Show', order %>
+        <%= link_to printbill_order_path(order), class: "fas fa-print ml-2 text-gray-500 hover:text-gray-700", target: "_blank" do %>
+        Print Bill
+          <% end %>
       <% end %>
       <% end %>
     </tbody>

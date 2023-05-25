@@ -18,6 +18,11 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
+  resources :orders do
+    get 'printbill', on: :member
+  end
+
+
   devise_for :users
   match '/404', to: 'errors#not_found', via: :all
   root to: 'home#home1'

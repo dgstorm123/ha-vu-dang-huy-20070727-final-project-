@@ -1,0 +1,187 @@
+<% content_for :title, "Print Order" %>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-8">
+    <h2></h2>
+    <ol class="breadcrumb">
+      
+      <li class="active">
+        <strong></strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-4">
+    <div class="title-action">
+      <button href="#" onclick="print_invoice()" class="btn btn-primary"><i class="fa fa-print"></i> Print bill</button>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInRight" id="print">
+      <div class="ibox-content p-xl">
+        <div class="invoice_head">
+          <div class="row">
+            <div class="col-xs-10">
+              <h2 style="font-size: 30px; margin-bottom: 20px; color: #f70b0b">CATS <span style="color: #1ab394; font-weight: 900">Coffee</span></h2>
+              <p>
+                cats coffee address, Road: Hanoi<br>
+                HANOI ,VN
+              </p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <h4 class="text-center">CATS HOUSE</h4>
+        <div class="row">
+          <div class="col-xs-6">
+            <h5>To:</h5>
+            <address>
+              <strong><%= @order.name %></strong><br>
+              <%= @order.address %><br>
+              <b>Phone :</b> <%= @order.phone %>
+            </address>
+          </div>
+          <div class="col-xs-6 text-right">
+            <h4>Invoice No.</h4>
+            <h4 class="text-navy">INV-000-<%= @order.id %></h4>
+            <p>
+              <span><strong>Invoice Date:</strong> <%= @order.created_at.strftime("%B %d, %Y") %></span><br />
+              <span><strong>Due Date:</strong> <%= @order.delivery_date %></span>
+            </p>
+          </div>
+        </div>
+        <div class="table-responsive m-t">
+          <table class="table invoice-table">
+            <thead>
+              <tr>
+                <th>Qty</th>
+                <th width="60%" style="text-align: left">Item List</th>
+                <th>Rate</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><%= @order.quantity %></td>
+                <td style="text-align: left">
+                  <div>
+                   <strong><%= @order.product.id %>. <%= @order.product.name %></strong><br>
+                    <small><%= @order.product.description %></small>
+                  </div>
+                </td>
+                <td>Tk <%= @order.product.price %></td>
+                <td>Tk <%= @order.product.price * @order.quantity %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /table-responsive -->
+        <hr style="margin-top: 0px;">
+        <div class="row">
+          <div class="col-xs-8">
+            <div class="well m-t">
+              <strong>Comments</strong>
+              thank you for stop and buy , this will help sen's feed the boss
+            </div>
+          </div>
+          <div class="col-xs-4">
+            <table class="table invoice-total">
+              <tbody>
+                <tr>
+                  <td><strong>Sub Total :</strong></td>
+                  <td>Tk <%= @order.product.price * @order.quantity %></td>
+                </tr>
+                <tr>
+                  <td><strong>TAX :</strong></td>
+                  <td>Tk 0</td>
+                </tr>
+                <tr>
+                  <td><strong>TOTAL :</strong></td>
+                  <td style="border: 1px solid #DDDDDD;">Tk <%= @order.product.price * @order.quantity %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <p>
+              Recvied By : __________________
+            </p>
+          </div>
+          <div class="col-xs-6 text-right"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function print_invoice() {
+    window.print();
+  }
+</script>
+
+
+<style>
+    .invoice_head{
+  margin-bottom: 20px;
+}
+.invoice_head h1{
+  !font-family: title;
+  font-size: 40px;
+}
+.invoice_head p{
+    font-size: 14px;
+}
+.invoice_logo{
+  width: 130px;
+}
+
+
+
+@media print{
+	body {
+		visibility: hidden;
+	}
+
+	#print{
+		visibility: visible;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		width: 100%;
+		border: none;
+		padding: 0px;
+		margin: 0px;
+	}
+
+	#print2{
+		display: block;
+	}
+
+	.ibox-content{
+		border-top: none;
+		padding: 30px;
+	}
+
+    .btn-primary {
+    float: left;
+    margin-right: 10px;
+    background-color: #1ab394;
+    color: #fff;
+    border-color: #1ab394;
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus,
+  .btn-primary:active {
+     background-color: #1dc5a3;
+    border-color: #1dc5a3;
+  }
+
+
+}
+</style>

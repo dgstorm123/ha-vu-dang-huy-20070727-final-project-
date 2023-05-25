@@ -20,19 +20,18 @@
   </div>
   <div class="mb-6">
     <%= form.label :import_day, class: label_class %>
-    <%= form.date_field :import_day, class: input_class %>
+    <%= form.date_field :import_day, class: input_class, id: "inventory_import_day" %>
   </div>
   <div class="mb-6">
     <%= form.label :exp_day, class: label_class %>
-    <%= form.date_field :exp_day, class: input_class %>
+    <%= form.date_field :exp_day, class: input_class, id: "inventory_exp_day" %>
   </div>
 
-  <div class="mb-6">
+ <div class="mb-6">
     <%= form.label :day_left, class: label_class %>
-    <span id="day_left_value"><%= inventory.day_left %></span>
-    <%= form.hidden_field :day_left, id: "inventory_day_left" %>
+    <span id="day_left_value"><%= @inventory.day_left %></span>
   </div>
-
+  
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       var expDayField = document.getElementById("inventory_exp_day");
@@ -45,28 +44,15 @@
         var dayLeft = Math.ceil((expDay - importDay) / (1000 * 60 * 60 * 24));
 
         dayLeftValue.innerText = dayLeft;
-        document.getElementById("inventory_day_left").value = dayLeft; // Cập nhật giá trị day_left vào trường ẩn
       }
 
-      expDayField.addEventListener("change", calculateDayLeft);
-      importDayField.addEventListener("change", calculateDayLeft);
+      expDayField.addEventListener("input", calculateDayLeft);
+      importDayField.addEventListener("input", calculateDayLeft);
 
-      // Tính toán ban đầu khi trang được tải
+      // Calculate initially when the page is loaded
       calculateDayLeft();
     });
   </script>
-
-  <!-- Các trường khác và nút gửi form -->
-
-  <% if inventory.persisted? %>
-    <% # Hiển thị day_left nếu đã có giá trị %>
-    <% if inventory.day_left.present? %>
-      <div class="mb-6">
-        <strong>Days left:</strong> <%= inventory.day_left %>
-      </div>
-    <% end %>
-  <% end %>
-
 
   <div class="mb-6">
     <%= form.label :provider, class: label_class %>
@@ -74,6 +60,7 @@
   </div>
 
   <%= form.submit class: button_class(theme: 'primary') %>
+
 
   <% if inventory.persisted? %>
     <%= link_to "Cancel", inventory, class: "text-neutral-700 underline inline-block ml-3" %>

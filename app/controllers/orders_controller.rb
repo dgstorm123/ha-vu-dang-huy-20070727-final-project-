@@ -1,24 +1,51 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: %i[ show edit update destroy ]
   before_action :authenticate_user!
+
   # GET /orders or /orders.json
   def index
     @orders = Order.all
+    @memberships = Membership.where(phone_number: @orders.pluck(:phone))
   end
 
   # GET /orders/1 or /orders/1.json
   def show
+    @order = Order.find(params[:id])
   end
 
   # GET /orders/new
   def new
     @order = Order.new
+    if params[:order] && params[:order][:phone]
+      @membership = Membership.find_by(phone: params[:order][:phone])
+      if @membership
+        @order.name = @membership.name
+        @order.voucher = @membership.voucher
+      end 
+    end
   end
+  
 
   # GET /orders/1/edit
   def edit
   end
 
+  def printbill
+    @order = Order.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "bill",
+               template: "orders/printbill.html.erb",
+               layout: "pdf.html",
+               orientation: "Portrait",
+               lowquality: true,
+               zoom: 1,
+               dpi: 75
+      end
+    end
+  end
+  
   # POST /orders or /orders.json
   def create
     @order = Order.new(order_params)
@@ -67,7 +94,4 @@ class OrdersController < ApplicationController
     def order_params
       params.require(:order).permit(:name, :phone, :address, :delivery_date, :product_id, :payment_option, :quantity, :order_status, :cardholder_name, :card_number, :bank_name)
     end
-    
-
-    
 end

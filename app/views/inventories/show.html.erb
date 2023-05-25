@@ -4,38 +4,55 @@
 
     <div class="flex-wrap lg:flex items-center lg:space-x-3">
       <%= link_to inventories_path, class: button_class(theme: "transparent") do %>
-      All Inventories
+        All Inventories
       <% end %>
       <%= link_to edit_inventory_path(@inventory), class: button_class(theme:"primary") do %>
-      Edit
+        Edit
       <% end %>
     </div>
   </div>
 
   <ul class="text-slate-700">
-      <li>
-        <p class="font-semibold">Name:</p>
-        <p><%= @inventory.name %></p>
-      </li>
-      <li>
-        <p class="font-semibold">Quantity:</p>
-        <p><%= @inventory.quantity %></p>
-      </li>
-      <li>
-        <p class="font-semibold">Import day:</p>
-        <p><%= @inventory.import_day %></p>
-      </li>
-      <li>
-        <p class="font-semibold">Exp day:</p>
-        <p><%= @inventory.exp_day %></p>
-      </li>
-      <li>
-        <p class="font-semibold">Day left:</p>
-        <p><%= @inventory.day_left %></p>
-      </li>
-      <li>
-        <p class="font-semibold">Provider:</p>
-        <p><%= @inventory.provider %></p>
-      </li>
+    <li>
+      <p class="font-semibold">Name:</p>
+      <p><%= @inventory.name %></p>
+    </li>
+    <li>
+      <p class="font-semibold">Quantity:</p>
+      <p><%= @inventory.quantity %></p>
+    </li>
+    <li>
+      <p class="font-semibold">Import day:</p>
+      <p><%= @inventory.import_day %></p>
+    </li>
+    <li>
+      <p class="font-semibold">Exp day:</p>
+      <p><%= @inventory.exp_day %></p>
+    </li>
+
+    <li>
+      <p class="font-semibold">Day left:</p>
+      <span id="day_left_value"><%= @inventory.day_left %></span>
+    </li>
+       
+    <li>
+      <p class="font-semibold">Provider:</p>
+      <p><%= @inventory.provider %></p>
+    </li>
   </ul>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var expDay = new Date("<%= @inventory.exp_day %>");
+    var importDay = new Date("<%= @inventory.import_day %>");
+    var dayLeftValue = document.getElementById("day_left_value");
+
+    function calculateDayLeft() {
+      var dayLeft = Math.ceil((expDay - importDay) / (1000 * 60 * 60 * 24));
+      dayLeftValue.innerText = dayLeft;
+    }
+
+    calculateDayLeft();
+  });
+</script>
