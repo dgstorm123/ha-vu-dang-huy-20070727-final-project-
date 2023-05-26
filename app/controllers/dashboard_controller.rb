@@ -1,4 +1,5 @@
 class DashboardController < ApplicationController
+    before_action :authenticate_user!
     def index
       @total_quantity = Order.sum(:quantity)
       puts "Total Quantity: #{@total_quantity}"
