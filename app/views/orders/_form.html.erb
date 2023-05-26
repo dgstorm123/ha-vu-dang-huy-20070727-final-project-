@@ -131,15 +131,14 @@
             if (data.membership && data.membership.voucher) {
               voucherField.innerText = data.membership.voucher;
             } else {
-              voucherField.innerText = '';
+              voucherField.innerText = 'N/A';
             }
           });
       } else {
-        voucherField.innerText = '';
+        voucherField.innerText = 'N/A';
       }
     });
   });
 </script>
-
 
 <% end %>

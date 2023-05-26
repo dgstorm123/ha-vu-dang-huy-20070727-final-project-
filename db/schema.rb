@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_24_042458) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_25_195021) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -101,6 +101,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_042458) do
     t.string "phone_number"
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "orders", force: :cascade do |t|
     t.string "name"
     t.string "phone"
@@ -116,6 +121,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_042458) do
     t.string "card_number"
     t.string "bank_name"
     t.string "title"
+    t.decimal "price"
   end
 
   create_table "products", force: :cascade do |t|

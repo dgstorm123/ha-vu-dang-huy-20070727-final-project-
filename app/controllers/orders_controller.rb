@@ -5,7 +5,9 @@ class OrdersController < ApplicationController
   # GET /orders or /orders.json
   def index
     @orders = Order.all
-    @memberships = Membership.where(phone_number: @orders.pluck(:phone))
+    @memberships = Membership.where(phone: @orders.pluck(:phone))
+    @total_quantity = @orders.sum(:quantity)
+    @total_price = @orders.sum { |order| order.product.price * order.quantity }
   end
 
   # GET /orders/1 or /orders/1.json
@@ -24,7 +26,6 @@ class OrdersController < ApplicationController
       end 
     end
   end
-  
 
   # GET /orders/1/edit
   def edit
@@ -45,7 +46,10 @@ class OrdersController < ApplicationController
       end
     end
   end
-  
+
+  helper_method :total_quantity
+
+
   # POST /orders or /orders.json
   def create
     @order = Order.new(order_params)
@@ -85,13 +89,14 @@ class OrdersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_order
-      @order = Order.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def order_params
-      params.require(:order).permit(:name, :phone, :address, :delivery_date, :product_id, :payment_option, :quantity, :order_status, :cardholder_name, :card_number, :bank_name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_order
+    @order = Order.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def order_params
+    params.require(:order).permit(:name, :phone, :address, :delivery_date, :product_id, :payment_option, :quantity, :order_status, :cardholder_name, :card_number, :bank_name, :price)
+  end
 end

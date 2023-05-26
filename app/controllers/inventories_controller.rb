@@ -3,9 +3,22 @@ class InventoriesController < ApplicationController
   before_action :authenticate_user!
   
   # GET /inventories or /inventories.json
+  
   def index
     @inventories = Inventory.all
+    @inventories_warning = Inventory.where("day_left < ?", 4)
+    @total_inventories_warning = @inventories_warning.sum(:quantity)
+    @inventory_names_warning = @inventories_warning.pluck(:name)
+    @inventories.each do |inventory|
+      exp_day = inventory.exp_day.to_date
+      import_day = inventory.import_day.to_date
+      day_left = (exp_day - import_day).to_i
+  
+      inventory.update(day_left: day_left)
+      end
   end
+  
+
 
   # GET /inventories/1 or /inventories/1.json
   def show
